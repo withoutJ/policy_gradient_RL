@@ -4,14 +4,14 @@ from torch.optim import Adam
 
 class Actor():
 
-    def __init__(self,observation_space,action_space,hidden_dim,std = 0,stdNetwork = False, lr=0.001) -> None:
+    def __init__(self,observation_space,action_space,hidden_dim,std = None, lr=0.001) -> None:
 
         self.observation_space= observation_space
         self.action_space = action_space
         self.hidden_dim = hidden_dim
-        self.std = std
-        self.stdNetwork = stdNetwork
-        self.policy = GaussianPolicy(observation_space,action_space,hidden_dim,std,stdNetwork)
+        if std:
+            self.std = std
+        self.policy = GaussianPolicy(observation_space,action_space,hidden_dim,std)
         self.lr = lr
         self.optimizer = Adam(self.policy.parameters(),lr=lr)
 

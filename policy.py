@@ -14,7 +14,6 @@ class GaussianPolicy(nn.Module):
         self.layer1 = nn.Linear(input_shape,hidden_dim)
         self.outputLayer1 = nn.Linear(hidden_dim,output_shape)
         self.outputLayer2 = None
-        self.stdNetwork = stdNetwork
 
         if not std:
             self.outputLayer2 = nn.Linear(hidden_dim,output_shape)
