@@ -12,11 +12,18 @@ def main():
     episode_scores = []
     episode_idx = 0
 
+    max_score = 0
+
     while episode_idx < params["num_episodes"]:
         episode, episode_score = simulate(env, actor)
         episode_scores.append(episode_score)
 
         actor.train(episode, params["gamma"])
+
+        if episode_score>max_score:
+            torch.save(actor.policy.state_dict(),"best_model.pth")
+
+        print(f"Episode {episode_idx}: {episode_score}")
 
         episode_idx+=1
 
