@@ -2,10 +2,9 @@ import gym
 from policy import GaussianPolicy
 from reinforce import Actor
 from simulation import simulate
-params = {"num_episodes": 100, "std": 0.5, "hideen_dim":64}
 
 def main():
-
+    params = {"num_episodes": 100, "std": 0.5}
 
     actor = Actor()
     env = gym.make('InvertedPendulum-v4')
