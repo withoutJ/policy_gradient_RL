@@ -16,15 +16,7 @@ def main():
         episode, episode_score = simulate(env, actor)
         episode_scores.append(episode_score)
 
-        actor.train(episode)
-
-        gamma = params["gamma"]
-
-        for k in len(episode):
-            
-            for step in episode[k:]:
-                
-
+        actor.train(episode, params["gamma"])
 
         episode_idx+=1
 

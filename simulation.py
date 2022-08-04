@@ -11,7 +11,7 @@ def simulate(env, actor):
     while not done:
         action, log_prob = actor.select_action(previous_observation)
         observation, reward, done, info = env.step(action)
-        episode.append([previous_observation, action, observation, reward, log_prob])
+        episode.append({"previous_observation":previous_observation,"action":action, "observation":observation, "reward":reward, "log_prob":log_prob})
         previous_observation = observation
         score+=reward
     return episode, score

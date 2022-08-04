@@ -16,5 +16,11 @@ class Actor():
         _,_, action, log_prob = self.policy(state)
         return action, log_prob
 
-    def train(self, episode):
-        pass
+    def train(self, episode, gamma):
+
+        for k in len(episode):
+            discount = 1
+            G = 0
+            for step in episode[k:]:
+                discount*=gamma
+                G+=step["reward"]*discount
