@@ -38,13 +38,13 @@ class GaussianPolicy(nn.Module):
         distribution = Normal(mean, std)
         action = distribution.sample()
 
-        log_pb  = distribution.log_prob(action)
+        log_prob  = distribution.log_prob(action)
         action = torch.tanh(action)
         action = action*3
 
         std = torch.Tensor(std)
 
-        return mean, std, action, log_pb
+        return mean, std, action, log_prob
 
 
 
