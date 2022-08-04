@@ -4,7 +4,7 @@ from torch.optim import Adam
 
 class Actor():
 
-    def __init__(self,observation_space,action_space,hidden_dim,std = None, lr=0.001) -> None:
+    def __init__(self,observation_space,action_space,hidden_dim,std = None, lr=0.0001) -> None:
 
         self.observation_space= observation_space
         self.action_space = action_space

@@ -5,19 +5,22 @@ from reinforce import Actor
 from simulation import simulate
 
 def main():
-    params = {"num_episodes": 10000, "std": 0.5, "gamma": 0.9}
+    params = {"num_episodes": 10000, "std": 0, "gamma": 0.99}
 
 
     env = gym.make('InvertedPendulum-v4')
     obs_temp = env.reset()
-    actor = Actor(obs_temp.shape[0],1,100,std = 0.5)
+    actor = Actor(obs_temp.shape[0],1,100,std = 0.00005)
     episode_scores = []
     episode_idx = 0
 
     max_score = 0
 
     while episode_idx < params["num_episodes"]:
-        episode, episode_score = simulate(env, actor)
+        if episode_idx%1000 == 0:
+            episode, episode_score = simulate(env, actor,True)
+        else:
+            episode, episode_score = simulate(env, actor)
         episode_scores.append(episode_score)
 
         actor.train(episode, params["gamma"])
