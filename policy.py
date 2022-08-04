@@ -7,17 +7,16 @@ from torch.distributions import Normal
 
 class GaussianPolicy(nn.Module):
 
-    def __init__(self,input_shape,output_shape,hidden_dim,std = 0,stdNetwork = False):
+    def __init__(self,input_shape,output_shape,hidden_dim,std = None):
 
         super().__init__()
 
         self.layer1 = nn.Linear(input_shape,hidden_dim)
         self.outputLayer1 = nn.Linear(hidden_dim,output_shape)
         self.outputLayer2 = None
-        self.std = None
         self.stdNetwork = stdNetwork
 
-        if stdNetwork:
+        if not std:
             self.outputLayer2 = nn.Linear(hidden_dim,output_shape)
         else:
             self.std = std
