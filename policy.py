@@ -27,7 +27,7 @@ class GaussianPolicy(nn.Module):
         mean = F.relu(mean)
         mean = self.outputLayer1(mean)
 
-        if self.stdNetwork:
+        if not self.std:
             std = self.layer1(input)
             std = self.outputLayer2(std)
         else:
@@ -40,7 +40,7 @@ class GaussianPolicy(nn.Module):
         action = torch.tanh(action)
         action = action*3
 
-        std = torch.Tensor(std)
+        std = torch.tensor([std])
 
         return mean, std, action, log_prob
 

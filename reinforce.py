@@ -22,13 +22,13 @@ class Actor():
     def train(self, episode, gamma):
         losses = []
 
-        for k in len(episode):
+        for k in range(len(episode)):
             discount = 1
             G = 0
             for step in episode[k:]:
                 G+=step["reward"]*discount
                 discount*=gamma
-            losses.append(-G*log_prob)
+            losses.append(-G*step["log_prob"])
             
         loss = torch.stack(losses).sum()
         self.optimizer.zero_grad()

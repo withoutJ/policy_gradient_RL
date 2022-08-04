@@ -1,5 +1,6 @@
 import gym 
-from policy import GaussianPolicy 
+from policy import GaussianPolicy
+import torch
 
 def simulate(env, actor):
 
@@ -9,8 +10,8 @@ def simulate(env, actor):
     done = False
 
     while not done:
-        action, log_prob = actor.select_action(previous_observation)
-        observation, reward, done, info = env.step(action)
+        action, log_prob = actor.select_action(torch.tensor(previous_observation,dtype = torch.float))
+        observation, reward, done, info = env.step([action])
         episode.append({"previous_observation":previous_observation,"action":action, "observation":observation, "reward":reward, "log_prob":log_prob})
         previous_observation = observation
         score+=reward

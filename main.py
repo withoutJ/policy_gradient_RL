@@ -1,14 +1,16 @@
-import gym 
+import gym
+import torch
 from policy import GaussianPolicy
 from reinforce import Actor
 from simulation import simulate
 
 def main():
-    params = {"num_episodes": 100, "std": 0.5, "gamma": 0.9}
+    params = {"num_episodes": 10000, "std": 0.5, "gamma": 0.9}
 
-    actor = Actor()
+
     env = gym.make('InvertedPendulum-v4')
-
+    obs_temp = env.reset()
+    actor = Actor(obs_temp.shape[0],1,100,std = 0.5)
     episode_scores = []
     episode_idx = 0
 
