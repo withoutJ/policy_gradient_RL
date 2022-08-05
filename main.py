@@ -8,12 +8,12 @@ import pandas as pd
 
 def main():
 
-    params = {"num_episodes": 2500, "std": 0.2, "gamma": 0.99, "hidden_dim":256,"env":'InvertedPendulum-v4'}
+    params = {"num_episodes": 2500, "std": 0.2, "gamma": 0.99, "hidden_dim":256,"env":"InvertedDoublePendulum-v4"}
 
 
     env = gym.make(params["env"])
 
-    actor = Actor(env.observation_space.shape[0],env.action_space,params["hidden_dim"],std = params['std'])
+    actor = Actor(env.observation_space.shape[0],env.action_space[0],params["hidden_dim"],std = params['std'])
     episode_scores = []
     episode_idx = 0
 
