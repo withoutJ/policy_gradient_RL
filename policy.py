@@ -12,11 +12,11 @@ class GaussianPolicy(nn.Module):
         super().__init__()
 
         self.layer1 = nn.Linear(input_shape,hidden_dim)
-        self.outputLayer1 = nn.Linear(hidden_dim,output_shape)
+        self.outputLayer1 = nn.Linear(hidden_dim,1)
         self.outputLayer2 = None
 
         if not std:
-            self.outputLayer2 = nn.Linear(hidden_dim,output_shape)
+            self.outputLayer2 = nn.Linear(hidden_dim,1)
         else:
             self.std = std
 
@@ -36,13 +36,15 @@ class GaussianPolicy(nn.Module):
         distribution = Normal(mean, std)
         action = distribution.sample()
 
-        log_prob  = distribution.log_prob(action)
+        log_prob = distribution.log_prob(action)
+        log_prob = log_prob.sum()
+
         action = torch.tanh(action)
-        action = action*3
+        action = action.numpy()
 
         std = torch.tensor([std])
 
-        return mean, std, action, log_prob
+        return mean, std, action[0]*3, log_prob
 
 
 
