@@ -18,5 +18,5 @@ def simulate(env, actor,render = False):
 
         episode.append({"previous_observation":previous_observation,"action":action, "observation":observation, "reward":reward, "log_prob":log_prob})
         previous_observation = observation
-        score+=reward
+        score+=1
     return episode, score

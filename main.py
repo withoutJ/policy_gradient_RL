@@ -7,11 +7,13 @@ import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+
+
 def main():
 
 
 
-    params = {"num_episodes": 100, "std": 0.5, "gamma": 0.99, "hidden_dim":512,"env":"InvertedDoublePendulum-v4"}
+    params = {"num_episodes": 50000, "std": 0.3, "gamma": 0.99, "hidden_dim":512,"env":"InvertedDoublePendulum-v4"}
 
     dir = f"results/{params['env']}/reinforce/std={params['std']}_hiddenDim={params['hidden_dim']}"
 
@@ -29,17 +31,22 @@ def main():
 
     std = params["std"]
     while episode_idx < params["num_episodes"]:
-        std*=0.99
-        actor.policy.set_std(std)
+
+        if episode_idx%1000==0:
+            actor.policy.set_std(actor.policy.std-0.005)
+
+
+        #actor.policy.set_std(std)
         episode, episode_score = simulate(env, actor)
         episode_scores.append(episode_score)
 
         actor.train(episode, params["gamma"])
 
-        if episode_score>max_score:
+        if episode_score>=max_score:
             torch.save(actor.policy.state_dict(),os.path.join(dir,"best_model.pth"))
 
-        #print(f"Episode {episode_idx}: {episode_score}")
+        if episode_idx % 1000==0:
+            print(f"Episode {episode_idx}: {episode_score}")
 
         episode_idx+=1
 
@@ -55,4 +62,5 @@ def main():
 
 
 if __name__ =="__main__":
+    torch.manual_seed(0)
     main()

@@ -4,12 +4,13 @@ from simulation import simulate
 import torch
 import pandas as pd
 import numpy as np
+import os
 
 def render(params):
 
     env = gym.make(params["env"])
-
-    actor = Actor(env.observation_space.shape[0],env.action_space,params["hidden_dim"],std = params["std"], model_path="results/inverted_double_pendulum/reinforce/std=0.2/best_model.pth")
+    dir = f"results/{params['env']}/reinforce/std={params['std']}_hiddenDim={params['hidden_dim']}"
+    actor = Actor(env.observation_space.shape[0],env.action_space,params["hidden_dim"],std = params["std"], model_path=os.path.join(dir,"best_model.pth"))
     mean = 0
     std = 0
     total_score = 0
@@ -30,7 +31,7 @@ def render(params):
 
 
 if __name__=="__main__":
-    params = {"num_episodes": 1000, "std": 0.00000000001, "gamma": 0.99, "hidden_dim": 512,"env":"InvertedDoublePendulum-v4"}
+    params = {"num_episodes": 1000, "std": 0.3, "gamma": 0.99, "hidden_dim": 512,"env":"InvertedDoublePendulum-v4"}
     render(params)
 
     
