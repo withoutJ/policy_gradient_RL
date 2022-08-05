@@ -47,6 +47,9 @@ class GaussianPolicy(nn.Module):
         std = torch.clamp(std, min=0, max=1)
 
         return mean, std, action[0], log_prob
+    
+    def set_std(self, std):
+        self.std=std
 
 
 

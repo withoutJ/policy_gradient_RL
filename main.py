@@ -12,6 +12,7 @@ def main():
 
 
     params = {"num_episodes": 100, "std": 0.5, "gamma": 0.99, "hidden_dim":512,"env":"InvertedDoublePendulum-v4"}
+
     dir = f"results/{params['env']}/reinforce/std={params['std']}_hiddenDim={params['hidden_dim']}"
 
     if not os.path.isdir(dir):
@@ -26,7 +27,10 @@ def main():
 
     max_score = 0
 
+    std = params["std"]
     while episode_idx < params["num_episodes"]:
+        std*=0.99
+        actor.policy.set_std(std)
         episode, episode_score = simulate(env, actor)
         episode_scores.append(episode_score)
 

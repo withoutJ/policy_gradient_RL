@@ -24,7 +24,7 @@ class Actor():
 
     def select_action(self, state):
         state = torch.from_numpy(state).float().unsqueeze(0)
-        _,_, action, log_prob = self. policy(state)
+        _,_, action, log_prob = self.policy(state)
         return action, log_prob
 
     def train(self, episode, gamma):
