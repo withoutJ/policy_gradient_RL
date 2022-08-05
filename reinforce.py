@@ -10,7 +10,7 @@ class Actor():
         self.action_space = action_space
         self.hidden_dim = hidden_dim
 
-        if std:
+        if std is not None:
             self.std = std
 
 

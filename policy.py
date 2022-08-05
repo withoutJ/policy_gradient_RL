@@ -14,9 +14,9 @@ class GaussianPolicy(nn.Module):
         self.layer1 = nn.Linear(input_shape,hidden_dim)
         self.outputLayer1 = nn.Linear(hidden_dim,1)
         self.outputLayer2 = None
-        self.std = std
 
-        if not self.std:
+
+        if std is None:
             self.outputLayer2 = nn.Linear(hidden_dim,1)
         else:
             self.std = std
@@ -28,7 +28,7 @@ class GaussianPolicy(nn.Module):
         mean = F.relu(mean)
         mean = self.outputLayer1(mean)
 
-        if not self.std:
+        if self.std is None:
             std = self.layer1(input)
             std = self.outputLayer2(std)
         else:
@@ -46,7 +46,7 @@ class GaussianPolicy(nn.Module):
         std = torch.tensor([std])
         std = torch.clamp(std, min=0, max=1)
 
-        return mean, std, action[0]*3, log_prob
+        return mean, std, action[0], log_prob
 
 
 
