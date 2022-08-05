@@ -5,6 +5,7 @@ from reinforce import Actor
 from simulation import simulate
 import csv
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def main():
 
@@ -31,8 +32,14 @@ def main():
         print(f"Episode {episode_idx}: {episode_score}")
 
         episode_idx+=1
+
+
     df = pd.DataFrame(episode_scores, columns=['ep_score'])
     df.to_csv('results/inverted_double_pendulum/reinforce/std=0.2/best_model.csv')
+
+    plt.plot(df['ep_score'])
+    plt.show()
+    plt.savefig('results/inverted_double_pendulum/reinforce/std=0.2/training.png')
 
 
 if __name__ =="__main__":
