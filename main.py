@@ -6,10 +6,16 @@ from simulation import simulate
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import os
 def main():
 
-    params = {"num_episodes": 8000, "std": 0.5, "gamma": 0.99, "hidden_dim":512,"env":"InvertedDoublePendulum-v4"}
+
+
+    params = {"num_episodes": 100, "std": 0.5, "gamma": 0.99, "hidden_dim":512,"env":"InvertedDoublePendulum-v4"}
+    dir = f"results/{params['env']}/reinforce/std={params['std']}_hiddenDim={params['hidden_dim']}"
+
+    if not os.path.isdir(dir):
+        os.makedirs(dir)
 
 
     env = gym.make(params["env"])
@@ -27,19 +33,21 @@ def main():
         actor.train(episode, params["gamma"])
 
         if episode_score>max_score:
-            torch.save(actor.policy.state_dict(),"results/inverted_double_pendulum/reinforce/std=0.2/best_model.pth")
+            torch.save(actor.policy.state_dict(),os.path.join(dir,"best_model.pth"))
 
-        print(f"Episode {episode_idx}: {episode_score}")
+        #print(f"Episode {episode_idx}: {episode_score}")
 
         episode_idx+=1
 
 
+
     df = pd.DataFrame(episode_scores, columns=['ep_score'])
-    df.to_csv('results/inverted_double_pendulum/reinforce/std=0.2/best_model.csv')
+    df.to_csv(os.path.join(dir,"best_model.csv"))
 
     plt.plot(df['ep_score'])
+
+    plt.savefig(os.path.join(dir,"training.png"))
     plt.show()
-    plt.savefig('results/inverted_double_pendulum/reinforce/std=0.2/training.png')
 
 
 if __name__ =="__main__":

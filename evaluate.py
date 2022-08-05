@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 
 def render(params):
-    
+
     env = gym.make(params["env"])
 
     actor = Actor(env.observation_space.shape[0],env.action_space,params["hidden_dim"],std = params["std"], model_path="results/inverted_double_pendulum/reinforce/std=0.2/best_model.pth")
