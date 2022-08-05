@@ -4,7 +4,7 @@ from torch.optim import Adam
 
 class Actor():
 
-    def __init__(self,observation_space,action_space,hidden_dim,std = None, lr=3e-4) -> None:
+    def __init__(self,observation_space,action_space,hidden_dim,std = None, lr=3e-4, model_path=None) -> None:
 
         self.observation_space= observation_space
         self.action_space = action_space
@@ -13,7 +13,12 @@ class Actor():
         if std:
             self.std = std
 
+
         self.policy = GaussianPolicy(observation_space,action_space,hidden_dim,std)
+
+        if model_path is not None:
+            self.policy.load_state_dict(torch.load(model_path))
+
         self.lr = lr
         self.optimizer = Adam(self.policy.parameters(),lr=lr)
 
