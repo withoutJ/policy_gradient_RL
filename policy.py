@@ -51,6 +51,24 @@ class GaussianPolicy(nn.Module):
     def set_std(self, std):
         self.std=std
 
+class ValueNetwork(nn.Module):
+
+    def __init__(self,input_shape,output_shape, hidden_dim,std):
+
+        super().__init__()
+
+        self.layer = nn.Linear(input_shape, hidden_dim)
+        self.output = nn.Linear(hidden_dim,1)
+
+    def forward(self, input):
+
+        v = self.layer(input)
+        v = F.relu(v)
+        v = self.outputLayer(v)
+        return v
+
+
+
 
 class GaussianPolicy2(nn.Module):
 
@@ -100,24 +118,3 @@ class GaussianPolicy2(nn.Module):
 
     def set_std(self, std):
         self.std = std
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

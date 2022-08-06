@@ -1,0 +1,6 @@
+Model with parameters:
+Initial std value: 50000
+Std changed: True
+Hidden dim: 0.3
+Hidden dim: 500
+Learning rate: 1e-05

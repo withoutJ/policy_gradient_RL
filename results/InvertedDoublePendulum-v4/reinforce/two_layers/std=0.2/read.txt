@@ -1,0 +1,5 @@
+Model with parameters:
+Initial std value: 50000
+Std changed: True (decreased for 0.002 every 1k epochs
+Hidden dim: 0.2
+Learning rate: 1e-05

@@ -1,0 +1,6 @@
+Model with parameters:
+Num of episodes: 50000
+Initial std value: 0.25
+Std changed: True
+Hidden dim: 800
+Learning rate: 5e-05

@@ -4,17 +4,18 @@ from torch.optim import Adam
 
 class Actor():
 
-    def __init__(self,observation_space,action_space,hidden_dim,std = None, lr=3e-5, model_path=None) -> None:
+    def __init__(self,observation_space,action_space,hidden_dim1,hidden_dim2 = None,std = None, lr=5e-5, model_path=None) -> None:
 
         self.observation_space= observation_space
         self.action_space = action_space
-        self.hidden_dim = hidden_dim
+        self.hidden_dim1 = hidden_dim1
+        self.hidden_dim2 = hidden_dim2
 
         if std is not None:
             self.std = std
 
 
-        self.policy = GaussianPolicy(observation_space,action_space,hidden_dim,std)
+        self.policy = GaussianPolicy(observation_space,action_space,hidden_dim1,std)
 
         if model_path is not None:
             self.policy.load_state_dict(torch.load(model_path))
@@ -50,8 +51,3 @@ class Actor():
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
-
-
-        
-            
-            
