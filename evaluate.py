@@ -1,5 +1,6 @@
 import gym
 from reinforce import Actor
+from actorCritic import ActorCritic
 from simulation import simulate
 import torch
 import pandas as pd
@@ -9,8 +10,8 @@ import os
 def render(params):
 
     env = gym.make(params["env"])
-    dir = f"results/{params['env']}/reinforce/one_layer/std={params['std_file']}"
-    actor = Actor(env.observation_space.shape[0],env.action_space,params["hidden_dim1"],params["hidden_dim2"],std = params['std'], model_path=os.path.join(dir,"best_model.pth"))
+    dir = f"results/{params['env']}/{params['method']}/{params['exp']}"
+    actor = ActorCritic(env.observation_space.shape[0],env.action_space,params["hidden_dim1"],std = params['std'], actor_path=os.path.join(dir,"actor_model.pth"), critic_path = os.path.join(dir,"critic_model.pth"))
     mean = 0
     std = 0
     total_score = 0
@@ -37,13 +38,11 @@ if __name__=="__main__":
 
         "num_episodes": 10,
         "std":0.001,
-        "std_file": 0.25,
-        "std_change": True,
-        "gamma": 0.99,
-        "hidden_dim1": 512,
+        "hidden_dim1": 256,
         "hidden_dim2": None,
-        "env": "InvertedDoublePendulum-v4",
-        "lr": 1e-5
+        "method":"actor_critic",
+        "exp":"experiment_20",
+        "env": "InvertedDoublePendulum-v4"
     }
     render(params)
 

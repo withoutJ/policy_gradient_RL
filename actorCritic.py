@@ -24,8 +24,8 @@ class ActorCritic():
             self.actor.load_state_dict(torch.load(actor_path))
             self.critic.load_state_dict(torch.load(critic_path))
 
-        self.critic_optimizer = Adam(self.policy.parameters(), lr=lr_critic)
-        self.actor_optimizer = Adam(self.policy.parameters(), lr=lr_actor)
+        self.critic_optimizer = Adam(self.critic.parameters(), lr=lr_critic)
+        self.actor_optimizer = Adam(self.actor.parameters(), lr=lr_actor)
 
     def select_action(self, state):
         state = torch.from_numpy(state).float().unsqueeze(0)
@@ -34,16 +34,20 @@ class ActorCritic():
 
     def train(self, previous_observation,observation,action,log_prob,reward,done):
 
+        previous_observation = torch.from_numpy(previous_observation).float().unsqueeze(0)
         vs_curr = self.critic(previous_observation)
+
         if not done:
+            observation = torch.from_numpy(observation).float().unsqueeze(0)
             vs_prime = self.critic(observation)
         else:
-            vs_prime= 0
+            vs_prime= torch.tensor([0]).float().unsqueeze(0)
 
-        delta = reward + self.gamma*vs_prime
-        critic_loss = torch.nn.functional.mse_loss(delta, vs_curr)
-        delta = delta + vs_curr
-        actor_loss = -log_prob*delta
+
+        critic_loss = torch.nn.functional.mse_loss(reward + self.gamma*vs_prime, vs_curr)
+        delta = reward + self.gamma*vs_prime - vs_curr
+        actor_loss = -log_prob*delta.detach()
+        #actor_loss = -log_prob * delta
         actor_loss *= self.I
 
         self.I *= self.gamma
@@ -51,6 +55,7 @@ class ActorCritic():
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
         self.critic_optimizer.step()
+
 
         self.actor_optimizer.zero_grad()
         actor_loss.backward()

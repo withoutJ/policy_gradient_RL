@@ -7,21 +7,24 @@ import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+from actorCritic import ActorCritic
 
 
 def main():
 
     params = {
 
-        "num_episodes": 50000,
-        "std": 0.25,
-        "std_change": True,
+        "num_episodes": 70000,
+        "std": 0.35,
+        "std_change": 0.003,
         "gamma": 0.99,
-        "hidden_dim1" : 800,
+        "hidden_dim1" : 256,
         "hidden_dim2" : None,
         "env":"InvertedDoublePendulum-v4",
-        "lr": 5e-5,
-        "method":"actor_critic"
+        "lr": 1e-4,
+        "lr_critic": 1e-3,
+        "method":"actor_critic",
+
     }
 
 
@@ -38,8 +41,10 @@ def main():
 
     env = gym.make(params["env"])
 
-    actor = Actor(env.observation_space.shape[0], env.action_space, params["hidden_dim1"],params["hidden_dim2"], std = params['std'])
-
+    if params['method'] == 'reinforce':
+        agent = Actor(env.observation_space.shape[0], env.action_space, params["hidden_dim1"],params["hidden_dim2"], std = params['std'])
+    elif params['method'] == 'actor_critic':
+        agent = ActorCritic(env.observation_space.shape[0], env.action_space,  params["hidden_dim1"], std=params['std'], gamma = params["gamma"], lr_critic=params['lr_critic'],lr_actor = params['lr'])
     episode_scores = []
     episode_idx = 0
     max_score = 0
@@ -48,15 +53,20 @@ def main():
 
         #linear std update
         if episode_idx%1000 == 0:
-            actor.policy.set_std(actor.policy.std-0.003)
+            agent.actor.set_std(agent.actor.std-params['std_change'])
 
-        episode, episode_score = simulate(env, actor)
+        episode, episode_score = simulate(env, agent)
         episode_scores.append(episode_score)
 
-        actor.train(episode, params["gamma"])
+        #actor.train(episode, params["gamma"])
 
-        if episode_score >= max_score:
-            torch.save(actor.policy.state_dict(), os.path.join(dir, "best_model.pth"))
+        if episode_score >=  max_score:
+            max_score = episode_score
+            if params['method'] == 'reinforce':
+                torch.save(agent.policy.state_dict(), os.path.join(dir, "best_model.pth"))
+            elif params['method'] == 'actor_critic':
+                torch.save(agent.actor.state_dict(), os.path.join(dir, "actor_model.pth"))
+                torch.save(agent.critic.state_dict(), os.path.join(dir, "critic_model.pth"))
 
         if episode_idx % 1000 ==0 or episode_idx ==  params["num_episodes"]-1:
             print(f"Episode {episode_idx}: {episode_score}")
@@ -74,7 +84,8 @@ def main():
         f.write(f"Hidden dim: {params['hidden_dim1']}\n")
         if params['hidden_dim2'] is not None:
             f.write(f"Hidden dim: {params['hidden_dim2']}\n")
-        f.write(f"Learning rate: {params['lr']}\n")
+        f.write(f"Actor learning rate: {params['lr']}\n")
+        f.write(f"Critic learning rate : {params['lr_critic']}\n")
 
     df = pd.DataFrame(episode_scores, columns=['ep_score'])
     #df.to_csv(os.path.join(dir,"best_model.csv"))
