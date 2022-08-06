@@ -20,10 +20,13 @@ def main():
         "hidden_dim1" : 800,
         "hidden_dim2" : None,
         "env":"InvertedDoublePendulum-v4",
-        "lr": 5e-5
+        "lr": 5e-5,
+        "method":"actor_critic"
     }
 
-    dir = f"results/{params['env']}/reinforce/one_layer/std={params['std']}"
+
+
+    dir = f"results/{params['env']}/"+params["method"]
     print("**************************************************************************************")
     print("Selected directory: ", dir)
     print("**************************************************************************************")
@@ -31,6 +34,8 @@ def main():
     if not os.path.isdir(dir):
         os.makedirs(dir)
 
+    num_experiments = len(os.listdir(dir))
+    dir = os.path.join(dir,"experiment_"+str(num_experiments))
 
     env = gym.make(params["env"])
 
