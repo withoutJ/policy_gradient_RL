@@ -31,11 +31,10 @@ def main():
     print("Selected directory: ", dir)
     print("**************************************************************************************")
 
-    if not os.path.isdir(dir):
-        os.makedirs(dir)
+    num_experiments = len(os.listdir(dir)) if os.path.isdir(dir) else 0
+    dir = os.path.join(dir,"experiment_"+str(num_experiments+1))
 
-    num_experiments = len(os.listdir(dir))
-    dir = os.path.join(dir,"experiment_"+str(num_experiments))
+    os.makedirs(dir)
 
     env = gym.make(params["env"])
 
