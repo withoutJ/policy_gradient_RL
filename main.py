@@ -7,6 +7,7 @@ import csv
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 from actorCritic import ActorCritic
 
 
@@ -14,17 +15,16 @@ def main():
 
     params = {
 
-        "num_episodes": 70000,
+        "num_episodes": 30000,
         "std": 0.35,
         "std_change": 0.003,
         "gamma": 0.99,
         "hidden_dim1" : 256,
         "hidden_dim2" : None,
-        "env":"InvertedDoublePendulum-v4",
+        "env":"Swimmer-v4",
         "lr": 1e-4,
         "lr_critic": 1e-3,
         "method":"actor_critic",
-
     }
 
 
@@ -42,23 +42,47 @@ def main():
     env = gym.make(params["env"])
 
     if params['method'] == 'reinforce':
-        agent = Actor(env.observation_space.shape[0], env.action_space, params["hidden_dim1"],params["hidden_dim2"], std = params['std'])
+        agent = Actor(env.observation_space.shape[0], env.action_space.shape[0], params["hidden_dim1"],params["hidden_dim2"], std = params['std'])
     elif params['method'] == 'actor_critic':
-        agent = ActorCritic(env.observation_space.shape[0], env.action_space,  params["hidden_dim1"], std=params['std'], gamma = params["gamma"], lr_critic=params['lr_critic'],lr_actor = params['lr'])
+        agent = ActorCritic(env.observation_space.shape[0], env.action_space.shape[0],  params["hidden_dim1"], std=params['std'], gamma = params["gamma"], lr_critic=params['lr_critic'],lr_actor = params['lr'])
     episode_scores = []
     episode_idx = 0
     max_score = 0
+    hits = 0
+    mean = 0
+    std = 0
+    total_score = 0
+    rewards = []
 
     while episode_idx < params["num_episodes"]:
 
         #linear std update
-        if episode_idx%1000 == 0:
+        if episode_idx % 1000 == 0:
+            mean = total_score/1000
+            rewards = np.array(rewards)
+            std = np.sqrt(np.sum(np.square(rewards - mean))/(999))
+            print(f"Mean: {mean} standard deviation: {std} after {episode_idx} number of episodes")
+            mean = 0
+            std  = 0
+            total_score = 0
+            rewards = []
             agent.actor.set_std(agent.actor.std-params['std_change'])
 
-        episode, episode_score = simulate(env, agent)
+        episode, episode_score = simulate(env, agent,render = False, train = True)
         episode_scores.append(episode_score)
 
+        total_score+=episode_score
+        rewards.append(episode_score)
+
         #actor.train(episode, params["gamma"])
+        if episode_score == 1000 :
+            hits += 1
+            if hits == 10:
+                for g in agent.actor_optimizer.param_groups:
+                    g['lr']*=0.95
+                for g in agent.critic_optimizer.param_groups:
+                    g['lr']*=0.95
+
 
         if episode_score >=  max_score:
             max_score = episode_score
@@ -94,7 +118,7 @@ def main():
 
     plt.savefig(os.path.join(dir,"training.png"))
     plt.show()
-
+    print('Hits: ', hits)
     print("**************************************************************************************")
     print("Uploaded into directory: ", dir)
     print("**************************************************************************************")
@@ -103,3 +127,4 @@ def main():
 if __name__ =="__main__":
     torch.manual_seed(0)
     main()
+

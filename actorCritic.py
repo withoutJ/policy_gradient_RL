@@ -30,7 +30,11 @@ class ActorCritic():
     def select_action(self, state):
         state = torch.from_numpy(state).float().unsqueeze(0)
         _, _, action, log_prob = self.actor(state)
+        state = state.detach()
         return action, log_prob
+
+    def set_iF(self):
+        self.I = 1
 
     def train(self, previous_observation,observation,action,log_prob,reward,done):
 
@@ -50,7 +54,6 @@ class ActorCritic():
         #actor_loss = -log_prob * delta
         actor_loss *= self.I
 
-        self.I *= self.gamma
 
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
@@ -60,3 +63,5 @@ class ActorCritic():
         self.actor_optimizer.zero_grad()
         actor_loss.backward()
         self.actor_optimizer.step()
+
+        self.I *= self.gamma
