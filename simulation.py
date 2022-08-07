@@ -26,18 +26,3 @@ def simulate(env, agent,render = False, train = False):
 
     return episode, score
 
-def simulateAC(env,actor,gamma,lmbd,render = False):
-
-    episode = []
-    score = 0
-    previous_observation = env.reset()
-    done = False
-
-    while not done:
-        action, log_prob = actor.select_action(np.array(previous_observation))
-        observation, reward, done, info = env.step(action)
-
-        if render:
-            env.render()
-
-        actor.train(previous_observation,observation,action,gamma,lmbd)
