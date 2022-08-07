@@ -42,7 +42,7 @@ if __name__=="__main__":
         "hidden_dim1": 256,
         "hidden_dim2": None,
         "method":"actor_critic",
-        "exp":"experiment_4",
+        "exp":"experiment_1",
         "env": "Swimmer-v4"
     }
     render(params)
