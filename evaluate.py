@@ -38,11 +38,11 @@ if __name__=="__main__":
     params = {
 
         "num_episodes": 10,
-        "std":0.001,
+        "std": 0.001,
         "hidden_dim1": 256,
         "hidden_dim2": None,
         "method":"actor_critic",
-        "exp":"experiment_1",
+        "exp":"experiment_3",
         "env": "Swimmer-v4"
     }
     render(params)

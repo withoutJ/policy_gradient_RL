@@ -19,7 +19,7 @@ class ActorCritic():
 
         self.std = std
 
-        self.buffer = Buffer(100000)
+        self.buffer = Buffer(10000)
 
         self.actor = GaussianPolicy(observation_space, action_space, hidden_dim, std)
         self.critic = ValueNetwork(observation_space, 1, hidden_dim)
@@ -41,6 +41,20 @@ class ActorCritic():
         self.I = 1
 
     def train(self, previous_observation,observation,action,log_prob,reward,done):
+
+        if len(self.buffer) < self.buffer.batch:
+
+            previous_observation = torch.from_numpy(previous_observation).float().unsqueeze(0)
+            vs_curr = self.critic(previous_observation)
+
+            if not done:
+                observation = torch.from_numpy(observation).float().unsqueeze(0)
+                vs_prime = self.critic(observation)
+            else:
+                vs_prime = torch.tensor([0]).float().unsqueeze(0)
+               
+        else:
+
 
         previous_observation = torch.from_numpy(previous_observation).float().unsqueeze(0)
         vs_curr = self.critic(previous_observation)

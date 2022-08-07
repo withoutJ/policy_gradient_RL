@@ -15,8 +15,8 @@ def main():
 
     params = {
 
-        "num_episodes": 10000,
-        "std": 1,
+        "num_episodes": 5000,
+        "std": 5,
         "std_change": 0.08,
         "gamma": 0.99,
         "hidden_dim1" : 256,
@@ -39,7 +39,7 @@ def main():
 
     os.makedirs(dir)
 
-    env = gym.make(params["env"])
+    env = gym.make(params["env"], ctrl_cost_weight = 1)
 
     if params['method'] == 'reinforce':
         agent = Actor(env.observation_space.shape[0], env.action_space.shape[0], params["hidden_dim1"],params["hidden_dim2"], std = params['std'])
