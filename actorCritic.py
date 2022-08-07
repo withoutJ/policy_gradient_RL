@@ -18,7 +18,7 @@ class ActorCritic():
         self.std = std
 
         self.actor = GaussianPolicy(observation_space, action_space, hidden_dim, std)
-        self.critic = ValueNetwork(observation_space, action_space, hidden_dim)
+        self.critic = ValueNetwork(observation_space, 1, hidden_dim)
 
         if actor_path is not None:
             self.actor.load_state_dict(torch.load(actor_path))
