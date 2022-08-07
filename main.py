@@ -15,9 +15,9 @@ def main():
 
     params = {
 
-        "num_episodes": 30000,
-        "std": 0.35,
-        "std_change": 0.003,
+        "num_episodes": 10000,
+        "std": 1,
+        "std_change": 0.08,
         "gamma": 0.99,
         "hidden_dim1" : 256,
         "hidden_dim2" : None,
@@ -112,9 +112,15 @@ def main():
         f.write(f"Critic learning rate : {params['lr_critic']}\n")
 
     df = pd.DataFrame(episode_scores, columns=['ep_score'])
-    #df.to_csv(os.path.join(dir,"best_model.csv"))
+    moving_average = df['ep_score'].rolling(500).mean()
+    df.to_csv(os.path.join(dir,"best_model.csv"))
 
-    plt.plot(df['ep_score'])
+    plt.plot(df['ep_score'],label = 'Scores')
+    plt.plot(moving_average, label = 'Moving average')
+    plt.legend()
+    plt.title('Training scores')
+    plt.xlabel('Episode')
+    plt.ylabel('Score')
 
     plt.savefig(os.path.join(dir,"training.png"))
     plt.show()
