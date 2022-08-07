@@ -20,7 +20,9 @@ def simulate(env, agent,render = False, train = False):
 
         if train:
             agent.train(previous_observation, observation, action, log_prob, reward, done)
+        
         episode.append({"previous_observation":previous_observation,"action":action, "observation":observation, "reward":reward, "log_prob":log_prob})
+        agent.buffer.store(previous_observation, action, observation, reward,log_prob, done)
         previous_observation = observation
         score += reward
 

@@ -1,7 +1,9 @@
 from policy import GaussianPolicy
 from policy import ValueNetwork
+from replayBuffer import Buffer
 import torch
 from torch.optim import Adam
+
 class ActorCritic():
 
     def __init__(self, observation_space, action_space, hidden_dim, std=None, gamma = 0.99, lr_critic=5e-5,lr_actor = 5e-4, actor_path=None,
@@ -16,6 +18,8 @@ class ActorCritic():
         self.lr_actor = lr_actor
 
         self.std = std
+
+        self.buffer = Buffer(100000)
 
         self.actor = GaussianPolicy(observation_space, action_space, hidden_dim, std)
         self.critic = ValueNetwork(observation_space, 1, hidden_dim)
