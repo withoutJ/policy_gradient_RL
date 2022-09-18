@@ -1,2 +1,2 @@
 # policy_gradient_RL
-RL bot trained on Open AI gym environments based on policy gradients methods. 
+Actor-critic reinforcement learning algorithm for solving Open AI gym MuJoCo environments with continuous action space
